@@ -1,0 +1,41 @@
+function render() {
+  const data = loadShortcuts();
+  shortcutsDiv.innerHTML = "";
+
+  data.forEach((s, i) => {
+    const el = document.createElement("div");
+    el.className = "shortcut";
+
+    el.innerHTML = `
+      <div class="menu">⋮</div>
+      <div class="icon">
+        <img src="assets/${s.icon || 'default.png'}" onerror="this.src='assets/default.png'">
+      </div>
+      <span>${s.name}</span>
+    `;
+
+    el.onclick = (e) => {
+      if (e.target.classList.contains("menu")) return;
+      window.location.href = s.url;
+    };
+
+    el.querySelector(".menu").onclick = (e) => {
+      e.stopPropagation();
+      openModal(i);
+    };
+
+    el.oncontextmenu = (e) => {
+      e.preventDefault();
+      openModal(i);
+    };
+
+    shortcutsDiv.appendChild(el);
+  });
+
+  const add = document.createElement("div");
+  add.className = "shortcut";
+  add.innerHTML = `<div class="icon add-tile">+</div><span>Add</span>`;
+  add.onclick = () => openModal();
+
+  shortcutsDiv.appendChild(add);
+}
